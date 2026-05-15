@@ -81,10 +81,20 @@ podman build \
 Or use the build helper (reads from `versions.env`):
 
 ```bash
+# Podman (default)
 ./build.sh
+
+# Docker with log files (recommended for rootful Docker)
+./build.sh --docker
+
+# Docker without logs
+./build.sh --docker-nolog
+
 # Override defaults:
 # ./build.sh --agent v2026.5.7 --webui v0.51.61
 ```
+
+> **Why does Docker need a separate flag?** Rootful Docker cannot reopen `/dev/stdout` after gosu drops privileges. `--docker` redirects child logs to `/var/log/supervisor/` with automatic 10MB rotation. `--docker-nolog` sends logs to `/dev/null`. Podman users need no flag — it works out of the box.
 
 ### Version Compatibility Table
 
@@ -245,10 +255,18 @@ If you are currently running the multi-container setup (hermes-agent + hermes-we
 
 ### Permission errors on ~/.hermes
 
-Ensure the directory is owned by your user:
+**Rootless Podman:**
 
 ```bash
-sudo chown -R $(id -u):$(id -g) ~/.hermes
+podman unshare -- chown -R 10000:10000 ~/.hermes
+```
+
+**Rootful Podman or Docker:**
+
+Ownership is auto-corrected on startup. If issues persist:
+
+```bash
+sudo chown -R 10000:10000 ~/.hermes
 ```
 
 ### WebUI not loading
@@ -259,10 +277,18 @@ Check that the webui venv was built correctly:
 podman exec hermes-suite /opt/hermes-webui/venv/bin/python -c "import yaml; print('OK')"
 ```
 
-### Services fail with "EACCES making dispatchers"
+### Services fail with "EACCES making dispatchers" (Docker only)
 
-Supervisord cannot open `/dev/stdout` when a TTY is allocated (it becomes a PTY slave).
-Do NOT add `tty: true` to docker-compose.yaml — the container runs correctly without it.
+This occurs on rootful Docker because supervisord cannot reopen `/dev/stdout` after
+privileges are dropped. Rebuild with the Docker flag:
+
+```bash
+./build.sh --docker        # with log files (recommended)
+# or
+./build.sh --docker-nolog  # without logs
+```
+
+Also ensure `tty: true` is NOT set in docker-compose.yaml.
 
 ### Dashboard returns connection error
 
