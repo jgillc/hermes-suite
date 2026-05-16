@@ -3,7 +3,7 @@
 # build.sh — Build the Hermes Suite container image
 #
 # Reads pinned versions from versions.env by default.
-# Override with: ./build.sh --agent v2026.5.7 --webui v0.51.65
+# Override with: ./build.sh --agent v2026.5.16 --webui v0.51.74
 #
 # Build modes:
 #   (default)       Podman — child logs to /dev/stdout (docker logs)

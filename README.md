@@ -64,7 +64,7 @@ If you prefer not to build manually, use our pre-verified image tags from
 [Docker Hub](https://hub.docker.com/r/ascensionoid/hermes-suite):
 
 ```bash
-podman pull ascensionoid/hermes-suite:2026.5.7-0.51.65
+podman pull ascensionoid/hermes-suite:2026.5.16-0.51.74
 ```
 
 ### Manual Build with Specific Versions
@@ -73,9 +73,9 @@ If you need a specific combination, pass the versions as build arguments:
 
 ```bash
 podman build \
-  --build-arg AGENT_VERSION=v2026.5.7 \
-  --build-arg HERMES_WEBUI_VERSION=v0.51.65 \
-  -t hermes-suite:2026.5.7-0.51.65 .
+  --build-arg AGENT_VERSION=v2026.5.16 \
+  --build-arg HERMES_WEBUI_VERSION=v0.51.74 \
+  -t hermes-suite:2026.5.16-0.51.74 .
 ```
 
 Or use the build helper (reads from `versions.env`):
@@ -91,7 +91,7 @@ Or use the build helper (reads from `versions.env`):
 ./build.sh --docker-nolog
 
 # Override defaults:
-# ./build.sh --agent v2026.5.7 --webui v0.51.65
+# ./build.sh --agent v2026.5.16 --webui v0.51.74
 ```
 
 > **Why does Docker need a separate flag?** Rootful Docker cannot reopen `/dev/stdout` after gosu drops privileges. `--docker` redirects child logs to `/var/log/supervisor/` with automatic 10MB rotation. `--docker-nolog` sends logs to `/dev/null`. Podman users need no flag — it works out of the box.
@@ -102,15 +102,15 @@ Every release is an explicitly tested pair of Agent + WebUI on both amd64 and ar
 
 | Suite Tag | Agent Version | WebUI Version | Tested |
 |-----------|---------------|---------------|--------|
-| `2026.5.7-0.51.65` | v2026.5.7 | v0.51.65 | amd64 + arm64 |
+| `2026.5.16-0.51.74` | v2026.5.16 | v0.51.74 | amd64 + arm64 |
 
 > **Full version history:** https://github.com/sunnysktsang/hermes-suite/releases
 
 ### Version Tag Format
 
 Suite tags follow the pattern `{agent_date}-{webui_semver}`:
-- **Agent**: date-based version from `nousresearch/hermes-agent` (e.g. `v2026.5.7`)
-- **WebUI**: semantic version from `nesquena/hermes-webui` (e.g. `v0.51.65`)
+- **Agent**: date-based version from `nousresearch/hermes-agent` (e.g. `v2026.5.16`)
+- **WebUI**: semantic version from `nesquena/hermes-webui` (e.g. `v0.51.74`)
 
 The pinned pair for each release is declared in `versions.env`.
 
@@ -134,9 +134,9 @@ Or manually with pinned versions:
 
 ```bash
 podman build \
-  --build-arg AGENT_VERSION=v2026.5.7 \
-  --build-arg HERMES_WEBUI_VERSION=v0.51.65 \
-  -t ascensionoid/hermes-suite:2026.5.7-0.51.65 .
+  --build-arg AGENT_VERSION=v2026.5.16 \
+  --build-arg HERMES_WEBUI_VERSION=v0.51.74 \
+  -t ascensionoid/hermes-suite:2026.5.16-0.51.74 .
 ```
 
 ### 3. Create the network (if not already existing)
@@ -211,8 +211,8 @@ podman exec hermes-suite supervisorctl status
 Edit `versions.env` to change the pinned versions:
 
 ```
-AGENT_VERSION=v2026.5.7
-WEBUI_VERSION=v0.51.65
+AGENT_VERSION=v2026.5.16
+WEBUI_VERSION=v0.51.74
 ```
 
 Then rebuild:
@@ -320,18 +320,16 @@ The Dockerfile performs these steps:
 
 2. **System packages** — Installs sudo, git, nano, network tools, and other utilities.
 
-3. **Tinker-Atropos** — Installs the optional reasoning engine from the agent source.
+3. **Browser tools** — Installs Playwright Chromium for the browser toolset.
 
-4. **Browser tools** — Installs Playwright Chromium for the browser toolset.
-
-5. **Supervisor** — Installs supervisord via pip into a dedicated venv at `/opt/supervisor`
+4. **Supervisor** — Installs supervisord via pip into a dedicated venv at `/opt/supervisor`
    (not available in Debian Trixie apt repos).
 
-6. **Hermes WebUI** — Clones from GitHub and installs into a separate venv at
+5. **Hermes WebUI** — Clones from GitHub and installs into a separate venv at
    `/opt/hermes-webui/venv`, along with the agent's Python dependencies so the WebUI
    can import agent modules.
 
-7. **Entrypoint** — `start.sh` handles UID/GID remapping (for rootless Podman),
+6. **Entrypoint** — `start.sh` handles UID/GID remapping (for rootless Podman),
    directory setup, and config bootstrapping before launching supervisord.
 
 ## Files

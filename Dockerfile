@@ -10,7 +10,7 @@
 #   hermes-dashboard — Built-in monitoring dashboard on port 9119
 #   hermes-webui     — Browser chat interface on port 8787
 #
-# Build:  podman build -t hermes-suite:2026.5.7-0.51.65 .
+# Build:  podman build -t hermes-suite:2026.5.16-0.51.74 .
 # Run:    podman-compose up -d
 # =============================================================================
 
@@ -19,7 +19,7 @@
 # This already contains: Python 3.13, Node.js, npm, Playwright, agent code,
 # the built-in web dashboard (hermes dashboard), the gateway, uv, and gosu.
 # ---------------------------------------------------------------------------
-ARG AGENT_VERSION=v2026.5.7
+ARG AGENT_VERSION=v2026.5.16
 FROM docker.io/nousresearch/hermes-agent:${AGENT_VERSION}
 
 USER root
@@ -43,13 +43,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN echo "hermes ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # ---------------------------------------------------------------------------
-# Stage 3: Install Tinker-Atropos reasoning engine (from current setup)
-# Uses uv which is already present in the base image.
-# ---------------------------------------------------------------------------
-RUN uv pip install -e /opt/hermes/tinker-atropos
-
-# ---------------------------------------------------------------------------
-# Stage 4: Install Browser tool dependencies for agent
+# Stage 3: Install Browser tool dependencies for agent
 # npm install + Playwright chromium (needed by browser toolset)
 # ---------------------------------------------------------------------------
 RUN cd /opt/hermes && \
@@ -59,7 +53,7 @@ RUN cd /opt/hermes && \
     rm -rf /var/lib/apt/lists/*
 
 # ---------------------------------------------------------------------------
-# Stage 5: Install supervisord via uv (not available in Debian Trixie apt)
+# Stage 4: Install supervisord via uv (not available in Debian Trixie apt)
 # We install it into a dedicated venv at /opt/supervisor.
 # ---------------------------------------------------------------------------
 RUN uv venv /opt/supervisor && \
@@ -71,14 +65,14 @@ RUN mkdir -p /var/log/supervisor /var/run/supervisor && \
     chown -R hermes:hermes /var/log/supervisor /var/run/supervisor
 
 # ---------------------------------------------------------------------------
-# Stage 6: Install hermes-webui
+# Stage 5: Install hermes-webui
 # The webui is a Python web server (server.py). We clone it from GitHub
 # and set up its own venv using uv (avoids python3-venv package requirement).
 # The webui needs the agent's Python deps to import agent modules.
 #
 # PIN to a specific tag for reproducible builds — never use 'master'.
 # ---------------------------------------------------------------------------
-ARG HERMES_WEBUI_VERSION=v0.51.65
+ARG HERMES_WEBUI_VERSION=v0.51.74
 RUN cd /opt && \
     git clone --depth 1 --branch ${HERMES_WEBUI_VERSION} \
         https://github.com/nesquena/hermes-webui.git hermes-webui && \
@@ -91,18 +85,18 @@ RUN cd /opt && \
 RUN echo "__version__ = '${HERMES_WEBUI_VERSION}'" > /opt/hermes-webui/api/_version.py
 
 # ---------------------------------------------------------------------------
-# Stage 7: Set up supervisord config and startup script
+# Stage 6: Set up supervisord config and startup script
 # ---------------------------------------------------------------------------
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY start.sh /opt/hermes-suite/start.sh
 RUN chmod +x /opt/hermes-suite/start.sh
 
 # ---------------------------------------------------------------------------
-# Stage 8: Environment, labels, and runtime config
+# Stage 7: Environment, labels, and runtime config
 # ---------------------------------------------------------------------------
 # Re-declare ARGs after FROM so they are available in LABEL
-ARG AGENT_VERSION=v2026.5.7
-ARG HERMES_WEBUI_VERSION=v0.51.65
+ARG AGENT_VERSION=v2026.5.16
+ARG HERMES_WEBUI_VERSION=v0.51.74
 
 LABEL org.opencontainers.image.title="Hermes Suite" \
       org.opencontainers.image.description="All-in-one: hermes-agent + hermes-webui + hermes-dashboard" \
