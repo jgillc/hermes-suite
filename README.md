@@ -9,7 +9,9 @@ Single Docker/Podman image combining three Hermes services:
 | hermes-dashboard | 9119 | Monitoring/analytics dashboard (built-in) |
 | hermes-webui | 8787 | Browser-based chat interface |
 
-Pre-built multi-arch images available on [Docker Hub](https://hub.docker.com/r/ascensionoid/hermes-suite?ref=1).
+Pre-built multi-arch images available on [Docker Hub](https://hub.docker.com/r/ascensionoid/hermes-suite?ref=2).
+
+> **🎉 Now with automatic runtime detection.** One image works on both Podman and Docker CE out of the box — no separate builds or flags needed. The container detects its runtime at startup and adjusts automatically. [Learn more](#changing-component-versions).
 
 🏗️ Official docker images are maintained by Ascensionoid ([ascensionoid.com](https://ascensionoid.com)).
 
