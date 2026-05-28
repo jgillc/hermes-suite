@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# up.sh — Start Hermes Suit container
+# up.sh — Start Hermes Suite container
 # =============================================================================
 set -e
 
@@ -71,7 +71,7 @@ case "$CONTAINER_RUNTIME" in
 esac
 
 echo ""
-echo "Hermes Suit is running:"
+echo "Hermes Suite is running:"
 echo "  Gateway:    http://localhost:8642"
 echo "  WebUI:      http://localhost:8787"
 echo "  Dashboard:  http://localhost:9119"

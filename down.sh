@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# down.sh — Stop Hermes Suit container
+# down.sh — Stop Hermes Suite container
 # =============================================================================
 set -e
 
@@ -48,4 +48,4 @@ case "$CONTAINER_RUNTIME" in
         ;;
 esac
 
-echo "Hermes Suit stopped."
+echo "Hermes Suite stopped."

@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# start.sh — Hermes Suit container entrypoint
+# start.sh — Hermes Suite container entrypoint
 # Handles UID/GID remapping, directory setup, and launches supervisord.
 # Detects Podman vs Docker to choose the appropriate privilege model.
 # Detection uses /proc/1/cgroup (reliable at runtime) rather than
@@ -76,7 +76,7 @@ setup_hermes() {
 # --- Helper: startup banner ---
 print_banner() {
     echo "=========================================="
-    echo " Hermes Suit — All-in-One Container"
+    echo " Hermes Suite — All-in-One Container"
     echo "=========================================="
     echo " Gateway:    http://0.0.0.0:8642"
     echo " Dashboard:  http://0.0.0.0:9119"
