@@ -76,8 +76,8 @@ If you need a specific combination, pass the versions as build arguments:
 ```bash
 podman build \
   --build-arg AGENT_VERSION=v2026.5.16 \
-  --build-arg HERMES_WEBUI_VERSION=v0.51.137 \
-  -t hermes-suite:2026.5.16-0.51.137 .
+  --build-arg HERMES_WEBUI_VERSION=v0.51.152 \
+  -t hermes-suite:2026.5.16-0.51.152 .
 ```
 
 Or use the build helper (reads from `versions.env`):
@@ -93,7 +93,7 @@ Or use the build helper (reads from `versions.env`):
 ./build.sh --docker-nolog
 
 # Override defaults:
-# ./build.sh --agent v2026.5.16 --webui v0.51.137
+# ./build.sh --agent v2026.5.16 --webui v0.51.152
 ```
 
 > **Docker compatibility:** Docker CE is auto-detected at container startup via /proc/1/cgroup.
@@ -107,7 +107,7 @@ Every release is an explicitly tested pair of Agent + WebUI on both amd64 and ar
 
 | Suite Tag | Agent Version | WebUI Version | Tested |
 |-----------|---------------|---------------|--------|
-| `2026.5.16-0.51.137` | v2026.5.16 | v0.51.137 | amd64 + arm64 |
+| `2026.5.16-0.51.152` | v2026.5.16 | v0.51.152 | amd64 + arm64 |
 
 > **Full version history:** https://github.com/sunnysktsang/hermes-suite/releases
 
@@ -115,7 +115,7 @@ Every release is an explicitly tested pair of Agent + WebUI on both amd64 and ar
 
 Suite tags follow the pattern `{agent_date}-{webui_semver}`:
 - **Agent**: date-based version from `nousresearch/hermes-agent` (e.g. `v2026.5.16`)
-- **WebUI**: semantic version from `nesquena/hermes-webui` (e.g. `v0.51.137`)
+- **WebUI**: semantic version from `nesquena/hermes-webui` (e.g. `v0.51.152`)
 
 The pinned pair for each release is declared in `versions.env`.
 
@@ -140,8 +140,8 @@ Or manually with pinned versions:
 ```bash
 podman build \
   --build-arg AGENT_VERSION=v2026.5.16 \
-  --build-arg HERMES_WEBUI_VERSION=v0.51.137 \
-  -t ascensionoid/hermes-suite:2026.5.16-0.51.137 .
+  --build-arg HERMES_WEBUI_VERSION=v0.51.152 \
+  -t ascensionoid/hermes-suite:2026.5.16-0.51.152 .
 ```
 
 ### 3. Create the network (if not already existing)
@@ -217,7 +217,7 @@ Edit `versions.env` to change the pinned versions and runtime settings:
 
 ```env
 AGENT_VERSION=v2026.5.16
-WEBUI_VERSION=v0.51.137
+WEBUI_VERSION=v0.51.152
 
 # Runtime selector: auto (default), podman, docker, docker-nolog
 CONTAINER_RUNTIME=auto
