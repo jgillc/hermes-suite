@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ascensionoid/hermes-suite:2026.5.16-0.51.137
+    image: ascensionoid/hermes-suite:${HERMES_SUITE_IMAGE_TAG}
     container_name: hermes-suite
     networks:
       agent_net:
