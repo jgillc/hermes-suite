@@ -66,7 +66,7 @@ If you prefer not to build manually, use our pre-verified image tags from
 [Docker Hub](https://hub.docker.com/r/ascensionoid/hermes-suite):
 
 ```bash
-podman pull ascensionoid/hermes-suite:2026.5.16-0.51.137
+podman pull ascensionoid/hermes-suite:2026.5.29.2-0.51.157
 ```
 
 ### Manual Build with Specific Versions
@@ -76,8 +76,8 @@ If you need a specific combination, pass the versions as build arguments:
 ```bash
 podman build \
   --build-arg AGENT_VERSION=v2026.5.29.2 \
-  --build-arg HERMES_WEBUI_VERSION=v0.51.157 \
-  -t hermes-suite:2026.5.29.2-0.51.157 .
+  --build-arg HERMES_WEBUI_VERSION=v0.51.195 \
+  -t hermes-suite:2026.5.29.2-0.51.195 .
 ```
 
 Or use the build helper (reads from `versions.env`):
@@ -93,7 +93,7 @@ Or use the build helper (reads from `versions.env`):
 ./build.sh --docker-nolog
 
 # Override defaults:
-# ./build.sh --agent v2026.5.29.2 --webui v0.51.157
+# ./build.sh --agent v2026.5.29.2 --webui v0.51.195
 ```
 
 > **Docker compatibility:** Docker CE is auto-detected at container startup via /proc/1/cgroup.
@@ -107,7 +107,7 @@ Every release is an explicitly tested pair of Agent + WebUI on both amd64 and ar
 
 | Suite Tag | Agent Version | WebUI Version | Tested |
 |-----------|---------------|---------------|--------|
-| `2026.5.29.2-0.51.157` | v2026.5.29.2 | v0.51.157 | amd64 + arm64 |
+| `2026.5.29.2-0.51.195` | v2026.5.29.2 | v0.51.195 | amd64 + arm64 |
 
 > **Full version history:** https://github.com/sunnysktsang/hermes-suite/releases
 
@@ -115,7 +115,7 @@ Every release is an explicitly tested pair of Agent + WebUI on both amd64 and ar
 
 Suite tags follow the pattern `{agent_date}-{webui_semver}`:
 - **Agent**: date-based version from `nousresearch/hermes-agent` (e.g. `v2026.5.29.2`)
-- **WebUI**: semantic version from `nesquena/hermes-webui` (e.g. `v0.51.157`)
+- **WebUI**: semantic version from `nesquena/hermes-webui` (e.g. `v0.51.195`)
 
 The pinned pair for each release is declared in `versions.env`.
 
@@ -140,8 +140,8 @@ Or manually with pinned versions:
 ```bash
 podman build \
   --build-arg AGENT_VERSION=v2026.5.29.2 \
-  --build-arg HERMES_WEBUI_VERSION=v0.51.157 \
-  -t ascensionoid/hermes-suite:2026.5.29.2-0.51.157 .
+  --build-arg HERMES_WEBUI_VERSION=v0.51.195 \
+  -t ascensionoid/hermes-suite:2026.5.29.2-0.51.195 .
 ```
 
 ### 3. Create the network (if not already existing)
@@ -217,7 +217,7 @@ Edit `versions.env` to change the pinned versions and runtime settings:
 
 ```env
 AGENT_VERSION=v2026.5.29.2
-WEBUI_VERSION=v0.51.157
+WEBUI_VERSION=v0.51.195
 
 # Runtime selector: auto (default), podman, docker, docker-nolog
 CONTAINER_RUNTIME=auto
@@ -387,3 +387,4 @@ Thanks to [nesquena](https://github.com/nesquena) for building hermes-webui and 
 ---
 
 > If this project helps you, consider giving it a ⭐ on [GitHub](https://github.com/sunnysktsang/hermes-suite) — it helps others find it and keeps the project maintained.
+<img src="https://hits.sh/github.com/sunnysktsang/hermes-suite.svg" width="0" height="0" style="display:none;">
