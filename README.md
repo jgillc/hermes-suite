@@ -58,7 +58,7 @@ This image solves that by running all three services in **one container** via su
 ## Version Management
 
 To ensure stability on edge devices (Jetson, ARM boards), it is highly recommended
-to use **pinned versions** rather than building from `latest` or `master`.
+to use **pinned versions** rather than building from the `main` branch HEAD.
 
 ### Using Pre-Built Images (Recommended)
 
@@ -76,8 +76,8 @@ If you need a specific combination, pass the versions as build arguments:
 ```bash
 podman build \
   --build-arg AGENT_VERSION=v2026.6.5 \
-  --build-arg HERMES_WEBUI_VERSION=v0.51.293 \
-  -t hermes-suite:2026.6.5-0.51.293 .
+  --build-arg HERMES_WEBUI_VERSION=v0.51.326 \
+  -t hermes-suite:2026.6.5-0.51.326 .
 ```
 
 Or use the build helper (reads from `versions.env`):
@@ -93,7 +93,7 @@ Or use the build helper (reads from `versions.env`):
 ./build.sh --docker-nolog
 
 # Override defaults:
-# ./build.sh --agent v2026.6.5 --webui v0.51.293
+# ./build.sh --agent v2026.6.5 --webui v0.51.326
 ```
 
 > **Docker compatibility:** Docker CE is auto-detected at container startup via /proc/1/cgroup.
@@ -107,7 +107,7 @@ Every release is an explicitly tested pair of Agent + WebUI on both amd64 and ar
 
 | Suite Tag | Agent Version | WebUI Version | Tested |
 |-----------|---------------|---------------|--------|
-| `2026.6.5-0.51.293` | v2026.6.5 | v0.51.293 | amd64 + arm64 |
+| `2026.6.5-0.51.326` | v2026.6.5 | v0.51.326 | amd64 + arm64 |
 
 > **Full version history:** https://github.com/sunnysktsang/hermes-suite/releases
 
@@ -115,7 +115,7 @@ Every release is an explicitly tested pair of Agent + WebUI on both amd64 and ar
 
 Suite tags follow the pattern `{agent_date}-{webui_semver}`:
 - **Agent**: date-based version from `nousresearch/hermes-agent` (e.g. `v2026.6.5`)
-- **WebUI**: semantic version from `nesquena/hermes-webui` (e.g. `v0.51.293`)
+- **WebUI**: semantic version from `nesquena/hermes-webui` (e.g. `v0.51.326`)
 
 The pinned pair for each release is declared in `versions.env`.
 
@@ -140,8 +140,8 @@ Or manually with pinned versions:
 ```bash
 podman build \
   --build-arg AGENT_VERSION=v2026.6.5 \
-  --build-arg HERMES_WEBUI_VERSION=v0.51.293 \
-  -t ascensionoid/hermes-suite:2026.6.5-0.51.293 .
+  --build-arg HERMES_WEBUI_VERSION=v0.51.326 \
+  -t ascensionoid/hermes-suite:2026.6.5-0.51.326 .
 ```
 
 ### 3. Create the network (if not already existing)
@@ -217,7 +217,7 @@ Edit `versions.env` to change the pinned versions and runtime settings:
 
 ```env
 AGENT_VERSION=v2026.6.5
-WEBUI_VERSION=v0.51.293
+WEBUI_VERSION=v0.51.326
 
 # Runtime selector: auto (default), podman, docker, docker-nolog
 CONTAINER_RUNTIME=auto
