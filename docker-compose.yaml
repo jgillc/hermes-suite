@@ -47,6 +47,17 @@ services:
         limits:
           memory: 4G
 
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.52.0-noble
+    container_name: hermes-playwright
+    networks:
+      agent_net:
+        ipv4_address: 10.99.0.20
+    ports:
+      - "3000:3000"
+    command: ["npx", "playwright", "run-server", "--port", "3000"]
+    restart: unless-stopped
+
 networks:
   agent_net:
     external: true
