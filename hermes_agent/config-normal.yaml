@@ -1,0 +1,156 @@
+# =============================================================================
+# Hermes — Normal (Production) Tier Config
+# Full-featured, frontier model, all toolsets enabled.
+# Best quality, standard pricing, maximum capability.
+# =============================================================================
+
+model:
+  default: "anthropic/claude-sonnet-4"
+  provider: openrouter
+  base_url: "https://openrouter.ai/api/v1"
+  context_length: 200000
+
+agent:
+  max_turns: 90
+  reasoning_effort: high
+  tool_use_enforcement: true
+  disabled_toolsets: []
+
+terminal:
+  backend: local
+  cwd: "/workspace"
+  timeout: 300
+
+compression:
+  enabled: true
+  threshold: 0.50
+  target_ratio: 0.20
+  protect_last_n: 20
+  codex_gpt55_autoraise: true
+
+display:
+  skin: default
+  compact: false
+  show_reasoning: false
+  show_cost: false
+  show_status_bar: true
+  streaming: false
+  personality: kawaii
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  memory_char_limit: 2200
+  user_char_limit: 1375
+  write_approval: false
+  nudge_interval: 10
+  flush_min_turns: 6
+
+approvals:
+  mode: manual
+  timeout: 60
+  cron_mode: deny
+  mcp_reload_confirm: true
+  destructive_slash_confirm: true
+
+prompt_caching:
+  cache_ttl: "1h"
+
+smart_model_routing:
+  enabled: false
+
+fallback_providers:
+  - provider: openrouter
+    model: ~anthropic/claude-sonnet-4
+  - provider: openrouter
+    model: ~google/gemini-2.5-flash
+  - provider: openrouter
+    model: ~google/gemini-3-flash-preview
+
+auxiliary:
+  vision:
+    provider: openrouter
+    model: google/gemini-2.5-flash
+    timeout: 120
+  compression:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 60
+  web_extract:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 360
+  title_generation:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 30
+  approval:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 30
+  curator:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 600
+  session_search:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 30
+  embedding:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+  kanban_decomposer:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 30
+  triage_specifier:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 30
+  profile_describer:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 30
+  tts_audio_tags:
+    timeout: 30
+
+curator:
+  enabled: true
+  interval_hours: 168
+  min_idle_hours: 2
+  stale_after_days: 30
+  archive_after_days: 90
+  consolidate: true
+  prune_builtins: true
+
+delegation:
+  model: ""
+  provider: openrouter
+  max_iterations: 50
+  max_concurrent_children: 4
+  max_spawn_depth: 3
+  child_timeout_seconds: 300
+  orchestrator_enabled: true
+  subagent_auto_approve: false
+  inherit_mcp_toolsets: true
+  reasoning_effort: high
+
+provider_routing:
+  sort: throughput
+  data_collection: deny
+
+checkpoints:
+  enabled: true
+  max_snapshots: 50
+
+stt:
+  enabled: true
+  provider: local
+  local:
+    model: base
+
+tts:
+  provider: edge
+
+toolsets:
+  - all

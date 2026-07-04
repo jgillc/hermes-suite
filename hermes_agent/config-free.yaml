@@ -1,0 +1,109 @@
+# =============================================================================
+# Hermes — Free Tier Config
+# All models are $0 (OpenRouter :free variants + OpenCode Zen).
+# Minimal features, aggressive cost savings, zero API spend.
+# =============================================================================
+
+model:
+  default: "big-pickle"
+  provider: "custom:opencode-zen"
+  context_length: 1000000
+
+custom_providers:
+  - name: opencode-zen
+    base_url: https://opencode.ai/zen/v1
+    key_env: OPENROUTER_API_KEY
+    api_mode: chat_completions
+
+agent:
+  max_turns: 20
+  reasoning_effort: medium
+  tool_use_enforcement: true
+  disabled_toolsets:
+    - browser
+    - code_execution
+    - delegation
+    - image_gen
+    - tts
+
+terminal:
+  backend: local
+  cwd: "/workspace"
+  timeout: 120
+
+compression:
+  enabled: true
+  threshold: 0.30
+  target_ratio: 0.15
+  protect_last_n: 10
+
+display:
+  skin: mono
+  compact: true
+  show_reasoning: false
+  show_cost: true
+  streaming: false
+
+memory:
+  memory_enabled: false
+  user_profile_enabled: false
+
+approvals:
+  mode: off
+
+prompt_caching:
+  cache_ttl: "5m"
+
+fallback_providers:
+  - provider: openrouter
+    model: deepseek/deepseek-v4-flash:free
+  - provider: openrouter
+    model: nvidia/nemotron-3-ultra-550b-a55b:free
+  - provider: openrouter
+    model: cohere/north-mini-code:free
+  - provider: opencode-zen
+    model: mimo-v2.5-free
+
+auxiliary:
+  vision:
+    provider: openrouter
+    model: cohere/north-mini-code:free
+    timeout: 30
+  compression:
+    provider: openrouter
+    model: cohere/north-mini-code:free
+    timeout: 30
+  web_extract:
+    provider: opencode-zen
+    model: big-pickle
+    timeout: 60
+  title_generation:
+    provider: opencode-zen
+    model: mimo-v2.5-free
+    timeout: 15
+  approval:
+    provider: openrouter
+    model: cohere/north-mini-code:free
+    timeout: 15
+  curator:
+    enabled: false
+  session_search:
+    provider: openrouter
+    model: cohere/north-mini-code:free
+    timeout: 15
+
+stt:
+  enabled: true
+  provider: local
+  local:
+    model: tiny
+
+curator:
+  enabled: false
+
+toolsets:
+  - web
+  - terminal
+  - file
+  - memory
+  - session_search

@@ -1,0 +1,119 @@
+# =============================================================================
+# Hermes — Cheap Tier Config
+# Budget-conscious but functional. Uses cheap capable models,
+# moderate features, sensible cost-saving defaults.
+# =============================================================================
+
+model:
+  default: "deepseek/deepseek-v4-flash"
+  provider: openrouter
+  base_url: "https://openrouter.ai/api/v1"
+  context_length: 128000
+
+agent:
+  max_turns: 40
+  reasoning_effort: low
+  tool_use_enforcement: true
+  disabled_toolsets:
+    - browser
+    - image_gen
+
+terminal:
+  backend: local
+  cwd: "/workspace"
+  timeout: 180
+
+compression:
+  enabled: true
+  threshold: 0.40
+  target_ratio: 0.20
+  protect_last_n: 15
+
+display:
+  skin: slate
+  compact: false
+  show_reasoning: false
+  show_cost: true
+  streaming: false
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  memory_char_limit: 2200
+  user_char_limit: 1375
+  write_approval: false
+  nudge_interval: 15
+
+approvals:
+  mode: smart
+  timeout: 30
+  cron_mode: deny
+
+prompt_caching:
+  cache_ttl: "5m"
+
+smart_model_routing:
+  enabled: true
+  max_simple_chars: 160
+  max_simple_words: 28
+  cheap_model:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+
+auxiliary:
+  vision:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 60
+  compression:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 60
+  web_extract:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 120
+  title_generation:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 15
+  approval:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 15
+  curator:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 120
+  session_search:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+    timeout: 15
+  embedding:
+    provider: openrouter
+    model: google/gemini-3-flash-preview
+
+curator:
+  enabled: true
+  interval_hours: 336
+  min_idle_hours: 4
+  stale_after_days: 60
+  archive_after_days: 120
+  consolidate: false
+  prune_builtins: true
+
+delegation:
+  model: deepseek/deepseek-v4-flash
+  provider: openrouter
+  max_iterations: 25
+  max_concurrent_children: 2
+  reasoning_effort: low
+
+stt:
+  enabled: true
+  provider: local
+  local:
+    model: base
+
+toolsets:
+  - all
