@@ -21,11 +21,15 @@ init-hermes:  ## Interactive setup of ~/.hermes/.env with API keys
 	bash $(HERMES_AGENT_DIR)/init.sh
 
 up-hermes: $(HERMES_AGENT_DIR)/config-free.yaml  ## Start hermes-suite (free-tier config, set up systemd service)
-	mkdir -p ~/.hermes; \
-	podman unshare chown -R 0:0 ~/.hermes; \
-	cp $(HERMES_AGENT_DIR)/config-free.yaml ~/.hermes/config.yaml; \
-	printf '%s\n' "$(abspath $(HERMES_AGENT_DIR)/config-free.yaml)" > ~/.hermes/.last_config; \
-	bash up.sh; \
+	mkdir -p ~/.hermes
+	cp $(HERMES_AGENT_DIR)/config-free.yaml ~/.hermes/config.yaml
+	printf '%s\n' "$(abspath $(HERMES_AGENT_DIR)/config-free.yaml)" > ~/.hermes/.last_config
+	bash up.sh
+	# Fix ownership so hermes user (container UID 1000) can access /opt/data
+	@echo "Waiting for container..."
+	@for i in 1 2 3 4 5; do podman exec hermes-suite test -d /opt/data 2>/dev/null && break; sleep 2; done
+	podman exec -u 0 hermes-suite chown hermes:hermes /opt/data
+	podman exec -u 0 hermes-suite chown -R hermes:hermes /opt/data
 	bash $(HERMES_AGENT_DIR)/setup-hermes-service.sh
 
 down-hermes:  ## Stop hermes-suite container
@@ -53,19 +57,25 @@ src-push-hermes:  ## Push edited host files (~/hermes-agent-src/) back into the 
 	@echo "Files pushed — run 'make reload-hermes' to restart the container"
 
 cheap-hermes: $(HERMES_AGENT_DIR)/config-cheap.yaml  ## Apply cheap-tier config (~/.hermes/config.yaml) and restart
-	mkdir -p ~/.hermes; \
-	podman unshare chown -R 0:0 ~/.hermes; \
-	cp $(HERMES_AGENT_DIR)/config-cheap.yaml ~/.hermes/config.yaml; \
-	printf '%s\n' "$(abspath $(HERMES_AGENT_DIR)/config-cheap.yaml)" > ~/.hermes/.last_config; \
-	bash up.sh; \
+	mkdir -p ~/.hermes
+	cp $(HERMES_AGENT_DIR)/config-cheap.yaml ~/.hermes/config.yaml
+	printf '%s\n' "$(abspath $(HERMES_AGENT_DIR)/config-cheap.yaml)" > ~/.hermes/.last_config
+	bash up.sh
+	@echo "Waiting for container..."
+	@for i in 1 2 3 4 5; do podman exec hermes-suite test -d /opt/data 2>/dev/null && break; sleep 2; done
+	podman exec -u 0 hermes-suite chown hermes:hermes /opt/data
+	podman exec -u 0 hermes-suite chown -R hermes:hermes /opt/data
 	podman restart hermes-suite
 
 normal-hermes: $(HERMES_AGENT_DIR)/config-normal.yaml  ## Apply normal/production config (~/.hermes/config.yaml) and restart
-	mkdir -p ~/.hermes; \
-	podman unshare chown -R 0:0 ~/.hermes; \
-	cp $(HERMES_AGENT_DIR)/config-normal.yaml ~/.hermes/config.yaml; \
-	printf '%s\n' "$(abspath $(HERMES_AGENT_DIR)/config-normal.yaml)" > ~/.hermes/.last_config; \
-	bash up.sh; \
+	mkdir -p ~/.hermes
+	cp $(HERMES_AGENT_DIR)/config-normal.yaml ~/.hermes/config.yaml
+	printf '%s\n' "$(abspath $(HERMES_AGENT_DIR)/config-normal.yaml)" > ~/.hermes/.last_config
+	bash up.sh
+	@echo "Waiting for container..."
+	@for i in 1 2 3 4 5; do podman exec hermes-suite test -d /opt/data 2>/dev/null && break; sleep 2; done
+	podman exec -u 0 hermes-suite chown hermes:hermes /opt/data
+	podman exec -u 0 hermes-suite chown -R hermes:hermes /opt/data
 	podman restart hermes-suite
 
 grafana-up:  ## Start Grafana + Prometheus monitoring stack
