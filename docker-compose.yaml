@@ -32,15 +32,22 @@ services:
     volumes:
       # Persist config, sessions, skills, memory across restarts
       - ~/.hermes:/opt/data:Z
+      # Persist agent source tree (survives image upgrades)
+      - hermes-agent-src:/opt/hermes:Z
       # Workspace directory — change to your project directory
       - ~/workspace:/workspace:z
       # Clock sync
       - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - /home/server/.env_hermes
     environment:
       - NODE_ENV=production
       - HERMES_HOME=/opt/data
       - HERMES_DATA_DIR=/opt/data
       - PATH=/opt/hermes/.venv/bin:/opt/hermes-webui/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      # Remap container user to match host user so file ownership is correct
+      - HERMES_UID=${HERMES_UID:-1000}
+      - HERMES_GID=${HERMES_GID:-1000}
     restart: unless-stopped
     deploy:
       resources:
@@ -53,10 +60,13 @@ services:
     networks:
       agent_net:
         ipv4_address: 10.99.0.20
-    ports:
-      - "3000:3000"
     command: ["npx", "playwright", "run-server", "--port", "3000"]
     restart: unless-stopped
+
+volumes:
+  # Persists agent source tree (/opt/hermes) across restarts and upgrades.
+  # Initialised from the image on first run; survives image pulls/upgrades.
+  hermes-agent-src:
 
 networks:
   agent_net:

@@ -9,10 +9,12 @@ COMPOSE_FILE="${SCRIPT_DIR}/docker-compose.yaml"
 
 # --- Load config from versions.env ---
 if [ -f "${SCRIPT_DIR}/versions.env" ]; then
-    eval "$(grep -E '^(AGENT_VERSION|WEBUI_VERSION|CONTAINER_RUNTIME|USE_SUDO)=' "${SCRIPT_DIR}/versions.env")"
+    eval "$(grep -E '^(AGENT_VERSION|WEBUI_VERSION|CONTAINER_RUNTIME|USE_SUDO|HERMES_UID|HERMES_GID)=' "${SCRIPT_DIR}/versions.env")"
 fi
 CONTAINER_RUNTIME="${CONTAINER_RUNTIME:-auto}"
 USE_SUDO="${USE_SUDO:-false}"
+HERMES_UID="${HERMES_UID:-$(id -u)}"
+HERMES_GID="${HERMES_GID:-$(id -g)}"
 
 # --- Auto-detect ---
 if [ "$CONTAINER_RUNTIME" = "auto" ]; then
@@ -39,7 +41,7 @@ export HERMES_SUITE_IMAGE_TAG="${AGENT_VER_CLEAN}-${WEBUI_VER_CLEAN}"
 
 # For sudo: compose needs explicit env passthrough
 if [ "$USE_SUDO" = "true" ]; then
-    COMPOSE_PREFIX="sudo env HERMES_SUITE_IMAGE_TAG=${HERMES_SUITE_IMAGE_TAG}"
+    COMPOSE_PREFIX="sudo env HERMES_SUITE_IMAGE_TAG=${HERMES_SUITE_IMAGE_TAG} HERMES_UID=${HERMES_UID} HERMES_GID=${HERMES_GID}"
 else
     COMPOSE_PREFIX=""
 fi

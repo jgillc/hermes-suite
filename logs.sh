@@ -37,10 +37,10 @@ case "$CONTAINER_RUNTIME" in
     podman)
         export PATH="$HOME/.local/bin:$PATH"
         PODMAN_COMPOSE="$(command -v podman-compose)"
-        $SUDO_PREFIX "$PODMAN_COMPOSE" -f "${COMPOSE_FILE}" logs -f
+        $SUDO_PREFIX "$PODMAN_COMPOSE" -f "${COMPOSE_FILE}" logs -f --timestamps
         ;;
     docker|docker-nolog)
-        $SUDO_PREFIX docker compose -f "${COMPOSE_FILE}" logs -f
+        $SUDO_PREFIX docker compose -f "${COMPOSE_FILE}" logs -f --timestamps
         ;;
     *)
         echo "ERROR: Unknown CONTAINER_RUNTIME: $CONTAINER_RUNTIME"

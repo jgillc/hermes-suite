@@ -34,8 +34,13 @@ setup_hermes() {
     mkdir -p "$HERMES_HOME"/{cron,sessions,logs,hooks,memories,skills,skins,plans,workspace,home,webui,cache}
 
     # .env — only create if missing
+    # Note: upstream image doesn't ship .env.example, so we create a minimal stub
     if [ ! -f "$HERMES_HOME/.env" ]; then
-        cp "$INSTALL_DIR/.env.example" "$HERMES_HOME/.env"
+        cat > "$HERMES_HOME/.env" <<-EOF
+			# Hermes Agent configuration
+			# Add your API keys below. Run 'hermes setup' for interactive setup.
+			# OPENROUTER_API_KEY=your_key_here
+		EOF
         echo "Created default .env — edit $HERMES_HOME/.env to add your API keys"
     fi
 
@@ -45,10 +50,10 @@ setup_hermes() {
         echo "Created default config.yaml"
     fi
 
-    # Ensure config permissions
+    # Ensure config permissions (best-effort under rootless podman)
     if [ -f "$HERMES_HOME/config.yaml" ]; then
-        chown hermes:hermes "$HERMES_HOME/config.yaml"
-        chmod 640 "$HERMES_HOME/config.yaml"
+        chown hermes:hermes "$HERMES_HOME/config.yaml" 2>/dev/null || true
+        chmod 640 "$HERMES_HOME/config.yaml" 2>/dev/null || true
     fi
 
     # SOUL.md — only create if missing
@@ -102,9 +107,12 @@ if [ "$(id -u)" = "0" ]; then
     actual_hermes_uid=$(id -u hermes)
     if [ "$(stat -c %u "$HERMES_HOME" 2>/dev/null)" != "$actual_hermes_uid" ]; then
         echo "$HERMES_HOME is not owned by $actual_hermes_uid, fixing"
-        chown -R hermes:hermes "$HERMES_HOME" 2>/dev/null || \
-            echo "Warning: chown failed (rootless container?) — continuing anyway"
+    chown -R hermes:hermes "$HERMES_HOME" 2>/dev/null || \
+        echo "Warning: chown failed (rootless container?) — continuing anyway"
     fi
+
+    # Ensure supervisor dirs are owned by hermes (UID may have changed via usermod)
+    chown hermes:hermes /var/log/supervisor /var/run/supervisor 2>/dev/null || true
 
     # --- Runtime-specific startup ---
     if is_docker; then
