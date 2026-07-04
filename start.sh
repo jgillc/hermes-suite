@@ -96,7 +96,8 @@ if [ "$(id -u)" = "0" ]; then
     # --- Privilege dropping (mirrors official hermes-agent entrypoint) ---
     if [ -n "$HERMES_UID" ] && [ "$HERMES_UID" != "$(id -u hermes)" ]; then
         echo "Changing hermes UID to $HERMES_UID"
-        usermod -u "$HERMES_UID" hermes
+        usermod -o -u "$HERMES_UID" hermes 2>/dev/null || \
+            echo "Warning: usermod failed (keep-id mode? UID $HERMES_UID may already be in use)"
     fi
 
     if [ -n "$HERMES_GID" ] && [ "$HERMES_GID" != "$(id -g hermes)" ]; then
@@ -107,8 +108,11 @@ if [ "$(id -u)" = "0" ]; then
     actual_hermes_uid=$(id -u hermes)
     if [ "$(stat -c %u "$HERMES_HOME" 2>/dev/null)" != "$actual_hermes_uid" ]; then
         echo "$HERMES_HOME is not owned by $actual_hermes_uid, fixing"
-    chown -R hermes:hermes "$HERMES_HOME" 2>/dev/null || \
-        echo "Warning: chown failed (rootless container?) — continuing anyway"
+        # Two-step chown: directory first, then contents (handles bind mounts)
+        chown hermes:hermes "$HERMES_HOME" 2>/dev/null || \
+            echo "Warning: chown of $HERMES_HOME dir failed (bind mount?) — trying contents"
+        chown -R hermes:hermes "$HERMES_HOME" 2>/dev/null || \
+            echo "Warning: recursive chown failed (rootless container?) — continuing anyway"
     fi
 
     # Ensure supervisor dirs are owned by hermes (UID may have changed via usermod)

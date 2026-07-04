@@ -2,7 +2,9 @@
 # Hermes Suite — docker-compose.yaml
 #
 # Single-container setup: all services in one image.
-# No UID/GID sharing issues — everything runs as the same user.
+# Uses userns_mode: keep-id to map container UID 1000 → host UID 1000
+# so files in the bind-mount ~/.hermes are accessible by both the host
+# user (server) and the container user (hermes).
 #
 # Usage:
 #   podman-compose up -d
@@ -40,8 +42,11 @@ services:
       - /home/server/.env_hermes:/opt/data/.env:Z
       # Clock sync
       - /etc/localtime:/etc/localtime:ro
+      # Mount start.sh so edits take effect without rebuilding the image
+      - ./start.sh:/opt/hermes-suite/start.sh:Z
     env_file:
       - /home/server/.env_hermes
+    userns_mode: keep-id
     environment:
       - NODE_ENV=production
       - HERMES_HOME=/opt/data
