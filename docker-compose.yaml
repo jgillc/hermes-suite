@@ -36,6 +36,8 @@ services:
       - hermes-agent-src:/opt/hermes:Z
       # Workspace directory — change to your project directory
       - ~/workspace:/workspace:z
+      # Mount .env_hermes so /reload-config picks up edits at runtime
+      - /home/server/.env_hermes:/opt/data/.env:Z
       # Clock sync
       - /etc/localtime:/etc/localtime:ro
     env_file:
