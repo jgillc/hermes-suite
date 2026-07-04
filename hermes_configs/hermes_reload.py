@@ -6,9 +6,8 @@ take effect on the next agent turn without restarting the gateway.
 """
 
 import sys
-import os
 
-sys.path.insert(0, '/opt/hermes')
+sys.path.insert(0, "/opt/hermes")
 
 from hermes_cli.config import (
     reload_env,

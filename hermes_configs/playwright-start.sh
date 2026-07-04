@@ -36,7 +36,7 @@ CHROME_PID=$!
 echo "Chrome PID: $CHROME_PID"
 
 # Wait for Chrome to start listening
-for i in $(seq 1 10); do
+for _ in $(seq 1 10); do
   if curl -sf http://127.0.0.1:9222/json/version >/dev/null 2>&1; then
     echo "Chrome CDP ready on 127.0.0.1:9222"
     break

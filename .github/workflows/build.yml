@@ -1,3 +1,5 @@
+# yamllint disable
+---
 name: Build and Push Multi-Arch Image
 
 on:

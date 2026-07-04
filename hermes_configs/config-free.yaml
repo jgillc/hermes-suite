@@ -1,3 +1,4 @@
+---
 # =============================================================================
 # Hermes — Free Tier Config
 # All models are $0 (OpenRouter :free variants + OpenCode Zen).
@@ -49,7 +50,7 @@ memory:
   user_profile_enabled: false
 
 approvals:
-  mode: off
+  mode: false
 
 prompt_caching:
   cache_ttl: "5m"

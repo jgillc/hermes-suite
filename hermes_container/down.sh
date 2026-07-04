@@ -26,12 +26,6 @@ if [ "$CONTAINER_RUNTIME" = "auto" ]; then
     fi
 fi
 
-# --- Determine sudo prefix ---
-SUDO_PREFIX=""
-if [ "$USE_SUDO" = "true" ]; then
-    SUDO_PREFIX="sudo"
-fi
-
 # --- Derive image tag from versions.env ---
 AGENT_VER_CLEAN="${AGENT_VERSION#v}"
 WEBUI_VER_CLEAN="${WEBUI_VERSION#v}"

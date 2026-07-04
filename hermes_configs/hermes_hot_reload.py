@@ -15,17 +15,17 @@ import sys
 import time
 import logging
 
-HERMES_HOME = os.environ.get('HERMES_HOME', '/opt/data')
-POLL_INTERVAL = int(os.environ.get('HERMES_HOT_RELOAD_INTERVAL', '5'))
-CONFIG_FILE = os.path.join(HERMES_HOME, 'config.yaml')
-ENV_FILE = os.path.join(HERMES_HOME, '.env')
+HERMES_HOME = os.environ.get("HERMES_HOME", "/opt/data")
+POLL_INTERVAL = int(os.environ.get("HERMES_HOT_RELOAD_INTERVAL", "5"))
+CONFIG_FILE = os.path.join(HERMES_HOME, "config.yaml")
+ENV_FILE = os.path.join(HERMES_HOME, ".env")
 
-LOG_FILE = os.path.join(HERMES_HOME, 'logs', 'hot-reload.log')
+LOG_FILE = os.path.join(HERMES_HOME, "logs", "hot-reload.log")
 os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
-    format='[hot-reload] %(message)s',
+    format="[hot-reload] %(message)s",
     handlers=[
         logging.FileHandler(LOG_FILE),
         logging.StreamHandler(),
@@ -44,7 +44,7 @@ def get_sig(path: str) -> tuple | None:
 
 def do_reload() -> None:
     try:
-        sys.path.insert(0, '/opt/hermes')
+        sys.path.insert(0, "/opt/hermes")
         from hermes_cli.config import (
             reload_env,
             _LOAD_CONFIG_CACHE,
@@ -52,6 +52,7 @@ def do_reload() -> None:
             get_config_path,
             _CONFIG_LOCK,
         )
+
         path_key = str(get_config_path())
         with _CONFIG_LOCK:
             _LOAD_CONFIG_CACHE.pop(path_key, None)
@@ -88,5 +89,5 @@ def main() -> None:
                 break
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
