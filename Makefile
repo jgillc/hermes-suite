@@ -1,5 +1,5 @@
 .ONESHELL:
-.PHONY: help hermes start stop status logs init lint test security all check \
+.PHONY: help hermes start stop status logs init lint test test-unit test-shell security all check \
         setup-tools install-local test-hermes install-precommit
 
 HERMES_AGENT_DIR := hermes_configs
@@ -71,7 +71,7 @@ lint:  ## Run linters (shellcheck, yamllint, hadolint, ruff)
 	fi
 	@echo "✅ Lint checks passed"
 
-test:  ## Run syntax validation and config checks
+test:  ## Run syntax validation, config checks, and unit tests
 	@echo "=== Shell syntax check ==="
 	@find . -name '*.sh' $(HERMES_IGNORE) -not -path './.git/*' -not -path './$(HERMES_CONTAINER_DIR)/*' -exec bash -n {} +
 	@echo "✅ All shell scripts parse cleanly"
@@ -85,7 +85,34 @@ test:  ## Run syntax validation and config checks
 	@echo "=== Python import check ==="
 	@python3 -c "import yaml; print('✅ PyYAML available')" 2>/dev/null || \
 		echo "  (PyYAML not installed — skipping YAML validation)"
+	@echo ""
+	@echo "=== Running pytest ==="
+	@if command -v pytest &>/dev/null; then \
+		pytest tests/ -v --tb=short || exit 1; \
+	else \
+		echo "  (pytest not installed — skipping unit tests)"; \
+	fi
 	@echo "✅ Tests passed"
+
+test-unit:  ## Run unit tests (pytest)
+	@echo "=== Running pytest unit tests ==="
+	@if command -v pytest &>/dev/null; then \
+		pytest tests/ -v --tb=short -m "not integration" || exit 1; \
+	else \
+		echo "  ❌ pytest not installed — install with: pip install pytest pytest-mock"; \
+		exit 1; \
+	fi
+	@echo "✅ Unit tests passed"
+
+test-shell:  ## Run shell script tests (bats)
+	@echo "=== Running BATS shell tests ==="
+	@if command -v bats &>/dev/null; then \
+		bats tests/hermes_container/*.bats tests/hermes_local/*.bats || exit 1; \
+	else \
+		echo "  ⚠️  BATS not installed — install with: npm install -g bats"; \
+		echo "  Skipping shell tests"; \
+	fi
+	@echo "✅ Shell tests passed"
 
 security:  ## Run security scans (shellcheck, clamav, secrets)
 	@echo "=== ShellCheck (strict) ==="
