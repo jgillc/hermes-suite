@@ -1,0 +1,31 @@
+[Unit]
+Description=Hermes WebUI Service (%i)
+Documentation=https://github.com/nous-research/hermes-suite
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%i
+Group=%i
+WorkingDirectory=%h/.hermes
+Environment="HERMES_HOME=%h/.hermes"
+Environment="HERMES_DATA_DIR=%h/.hermes"
+Environment="HERMES_WEBUI_HOST=0.0.0.0"
+Environment="HERMES_WEBUI_PORT=8787"
+Environment="HERMES_WEBUI_STATE_DIR=%h/.hermes/webui"
+Environment="HERMES_WEBUI_DEFAULT_WORKSPACE=%h/workspace"
+
+ExecStartPre=/bin/bash -c 'mkdir -p %h/.hermes/{cron,sessions,logs,hooks,memories,skills,skins,plans,workspace,home,webui,cache}'
+ExecStart=%h/hermes-suite/hermes_webui/venv/bin/python %h/hermes-suite/hermes_webui/server.py
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hermes-webui
+
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=300
+StartLimitBurst=5
+
+[Install]
+WantedBy=default.target

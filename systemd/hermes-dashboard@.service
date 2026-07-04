@@ -1,0 +1,26 @@
+[Unit]
+Description=Hermes Dashboard Service (%i)
+Documentation=https://github.com/nous-research/hermes-suite
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%i
+Group=%i
+WorkingDirectory=%h/.hermes
+Environment="HERMES_HOME=%h/.hermes"
+Environment="HERMES_DATA_DIR=%h/.hermes"
+
+ExecStart=%h/hermes-suite/hermes_upstream/.venv/bin/hermes dashboard --host 127.0.0.1 --port 9119 --insecure --no-open --skip-build
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hermes-dashboard
+
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=300
+StartLimitBurst=5
+
+[Install]
+WantedBy=default.target

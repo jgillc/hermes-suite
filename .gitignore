@@ -7,6 +7,11 @@
 .env.*
 !.env.example
 
+# Python virtual environments
+.venv
+venv/
+env/
+
 # Hermes data (mounted from host, never in repo)
 data/
 hermes/
